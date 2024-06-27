@@ -74,7 +74,7 @@ const Profile: React.FC = () => {
       const user = auth.currentUser;
 
       if (user) {
-        // Realizar una consulta para encontrar el documento donde el campo "uid" coincida con el UID del usuario
+        // consulta para encontrar el documento donde el campo "uid" coincida con el UID del usuario
         const q = query(collection(db, 'users'), where('uid', '==', user.uid));
         const querySnapshot = await getDocs(q);
 

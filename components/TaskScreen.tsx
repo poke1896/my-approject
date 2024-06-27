@@ -41,7 +41,7 @@ const TaskScreen: React.FC<TaskScreenNavigationProp> = ({ navigation }) => {
     const [tasks, setTasks] = useState<Task[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [loadingTaskIndex, setLoadingTaskIndex] = useState<number | null>(null);
-    const [searchTerm, setSearchTerm] = useState(''); // Estado para el término de búsqueda
+    const [searchTerm, setSearchTerm] = useState(''); 
 
     useFocusEffect(
         useCallback(() => {
@@ -103,7 +103,7 @@ const TaskScreen: React.FC<TaskScreenNavigationProp> = ({ navigation }) => {
                 setSelectedDate('');
                 setSelectedTime('');
                 setModalVisible(false);
-                fetchTasks(); // Refresh tasks after adding a new one
+                fetchTasks();
             } else {
                 console.error('No se encontraron documentos con el correo electrónico coincidente.');
             }

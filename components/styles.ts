@@ -389,11 +389,11 @@ export const styles = StyleSheet.create({
       
       hasTasksCircle: {
         position: 'absolute',
-        width: 30, // Ajusta el tamaño del círculo según sea necesario
+        width: 30, 
         height: 30,
-        borderRadius: 15, // Ajusta la mitad del valor de la altura para un círculo perfecto
-        backgroundColor: '#17A1FA', // Color del círculo
-        zIndex: 1, // Asegura que el círculo esté sobre los números de los días
+        borderRadius: 15, 
+        backgroundColor: '#17A1FA', 
+        zIndex: 1,
       },
     
    //--------------------------styles_Settings--------------------------------------

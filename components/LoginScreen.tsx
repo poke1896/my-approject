@@ -20,7 +20,6 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
   const handleSignIn = async () => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      // User signed in, navigate to home screen
       navigation.navigate('Main', { screen: 'Home2' });
     } catch (err) {
       if (err instanceof Error) {

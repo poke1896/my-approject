@@ -5,7 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { styles } from './styles'; 
 import { MainStackParamList } from '../navigation/MainNavigator'; 
 import { StackNavigationProp } from '@react-navigation/stack';
-import { auth } from '../firebaseConfig'; // Importa auth desde tu configuración de Firebase
+import { auth } from '../firebaseConfig'; 
 import { RootStackParamList } from '../navigation/RootNavigator'; 
 
 
