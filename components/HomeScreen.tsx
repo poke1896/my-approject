@@ -8,11 +8,13 @@ import { auth, db } from '../firebaseConfig';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import GroupCarousel from './GroupCarousel';
+import { fetchGroupsOther } from '../firebaseConfig';
 
 const HomeScreen: React.FC = () => {
     const [currentUser, setCurrentUser] = useState<any>(null);
     const [tasks, setTasks] = useState<any[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
+    const [groups, setGroups] = useState<any[]>([]);
 
 
 
@@ -75,13 +77,24 @@ const HomeScreen: React.FC = () => {
         }, [])
     );
 
+    useEffect(() => {
+        fetchGroupsOther()
+        .then((groupData) => {
+          setGroups(groupData);
+        })
+        .catch((error) => {
+          console.error('Error al obtener datos de grupos:', error);
+        });
+    }, []);
+
+
     const incompleteTasks = tasks.filter(task => task.state === "incomplete");
     const completedTasks = tasks.filter(task => task.state === "complete");
 
     return (
         <LinearGradient colors={['#00C0F3', '#005DA4']} style={styles.containerHome}>
             <Spinner visible={loading} textContent={'Cargando...'} textStyle={{ color: '#FFF' }} />
-
+            <ScrollView>
             <View style={styles.headerHome}>
                 <Icon name="user-circle" size={32} color="#fff" style={styles.userIconHome} />
                 <View style={styles.userInfoHome}>
@@ -132,6 +145,26 @@ const HomeScreen: React.FC = () => {
             <Text style={styles.sectionTitleHome}>Grupo de Tareas</Text>
             <ScrollView style={styles.contentHome} >
                 <GroupCarousel />
+            </ScrollView>
+            <Text style={styles.sectionTitleHome}>Tareas Grupales</Text>
+            <ScrollView style={styles.contentHome}>
+            {groups.map((group, index) => (
+                    <View key={index} style={styles.taskContainer}>
+                        <View style={styles.taskItemContainer}>
+                            <View style={styles.taskContent}>
+                                <View style={styles.taskInfo}>
+                                    <Text style={styles.taskTitle}>{group.title}--{group.tasks[0].state}</Text>
+                                    <Text style={styles.taskDateTime}>{group.tasks[0].date}-{group.tasks[0].time}</Text>
+                                </View>
+                            </View>
+                            <TouchableOpacity style={styles.taskDetailsButton}>
+                                <Icon name="chevron-right" size={24} color="#0EA5E9" />
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                ))}
+            </ScrollView>
+
             </ScrollView>
         </LinearGradient>
     );

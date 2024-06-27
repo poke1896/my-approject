@@ -1,11 +1,11 @@
-import React, { useState,useEffect } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, TextInput, Modal, Alert } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity, ScrollView, TextInput, Modal, Alert, FlatList } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { styles } from './styles';
 import { Task } from './TaskScreen';
 import { stylesModal } from './stylesmodal';
-import { collection, addDoc } from 'firebase/firestore';
-import { db, auth  } from '../firebaseConfig';
+import { collection, addDoc, getDocs } from 'firebase/firestore';
+import { db, auth } from '../firebaseConfig';
 
 interface GroupModalProps {
   isGroupModalVisible: boolean;
@@ -25,6 +25,22 @@ const GroupModal: React.FC<GroupModalProps> = ({
   const [isDropdownVisible, setDropdownVisible] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [emailInputs, setEmailInputs] = useState<string[]>([...groupTasks]);
+  const [userList, setUserList] = useState<{ name: string; email: string }[]>([]);
+  const [emailSuggestions, setEmailSuggestions] = useState<string[]>([]);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, 'users'));
+        const users = querySnapshot.docs.map(doc => doc.data() as { name: string; email: string });
+        setUserList(users);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    };
+
+    fetchUsers();
+  }, []);
 
   const toggleDropdown = () => {
     setDropdownVisible(!isDropdownVisible);
@@ -44,18 +60,22 @@ const GroupModal: React.FC<GroupModalProps> = ({
       if (!selectedTask) {
         throw new Error('No se ha seleccionado ninguna tarea.');
       }
-  
-      // Obtén el correo electrónico del usuario logueado
+
       const userEmail = auth.currentUser?.email;
       const lowerCaseEmailInputs = emailInputs.map(email => email.toLowerCase());
-      // Crea el objeto groupData con el correo del usuario y los correos ingresados manualmente
+
+      // Validar que todos los correos electrónicos ingresados están en la lista de usuarios
+      for (const email of lowerCaseEmailInputs) {
+        if (!userList.some(user => user.email.toLowerCase() === email)) {
+          throw new Error(`El correo ${email} no pertenece a un usuario registrado.`);
+        }
+      }
+
       const groupData = {
         title: selectedTask.title,
-        // Agrega el correo del usuario al objeto de datos del grupo con una clave que lo identifique
         userData: {
           userEmail: userEmail
         },
-        // Agrega los correos ingresados manualmente al arreglo de correos
         otherEmails: lowerCaseEmailInputs,
         tasks: [{
           date: selectedTask.date,
@@ -65,21 +85,49 @@ const GroupModal: React.FC<GroupModalProps> = ({
           state: selectedTask.state
         }]
       };
-  
-      // Guarda los datos del grupo en Firebase
+
       await addDoc(collection(db, 'group'), groupData);
       console.log('Datos del grupo guardados en Firebase');
       setGroupModalVisible(false);
       Alert.alert('Éxito', 'El grupo se creó exitosamente');
     } catch (error) {
       console.error('Error al guardar datos del grupo:', error);
-      Alert.alert('Error', 'No se pudo crear el grupo');
+
     }
   };
-  
+
   const removeEmailInput = (indexToRemove: number) => {
     setEmailInputs(emailInputs.filter((_, index) => index !== indexToRemove));
   };
+
+  const handleEmailInputChange = (value: string, index: number) => {
+    const updatedEmails = [...emailInputs];
+    updatedEmails[index] = value;
+
+    // Filtrar usuarios que coincidan con el valor ingresado
+    const matchedUsers = userList.filter(user =>
+      user.name.toLowerCase().includes(value.toLowerCase()) ||
+      user.email.toLowerCase().includes(value.toLowerCase())
+    );
+
+    // Obtener solo los correos únicos basados en las sugerencias
+    const uniqueSuggestions = Array.from(new Set(matchedUsers.map(user => user.email)));
+
+    // Mostrar solo las primeras 5 sugerencias
+    const suggestions = uniqueSuggestions.slice(0, 5);
+
+    // Actualizar el estado para mostrar las sugerencias
+    setEmailSuggestions(suggestions);
+    setEmailInputs(updatedEmails);
+  };
+
+  const selectSuggestion = (suggestion: string, index: number) => {
+    const updatedEmails = [...emailInputs];
+    updatedEmails[index] = suggestion;
+    setEmailSuggestions([]); // Limpiar sugerencias después de seleccionar
+    setEmailInputs(updatedEmails);
+  };
+
 
   return (
     isGroupModalVisible && (
@@ -125,11 +173,7 @@ const GroupModal: React.FC<GroupModalProps> = ({
                   placeholder="Correo"
                   placeholderTextColor="#00C0F3"
                   value={email}
-                  onChangeText={(value) => {
-                    const updatedEmails = [...emailInputs];
-                    updatedEmails[index] = value;
-                    setEmailInputs(updatedEmails);
-                  }}
+                  onChangeText={(value) => handleEmailInputChange(value, index)}
                 />
                 <TouchableOpacity onPress={() => removeEmailInput(index)}>
                   <Icon name="trash" size={20} color="red" />
@@ -137,6 +181,17 @@ const GroupModal: React.FC<GroupModalProps> = ({
               </View>
             ))}
           </ScrollView>
+          {/* Componente para mostrar sugerencias */}
+          <FlatList
+            data={emailSuggestions}
+            renderItem={({ item, index }) => (
+              <TouchableOpacity onPress={() => selectSuggestion(item, index)}>
+                <Text>{item}</Text>
+              </TouchableOpacity>
+            )}
+            keyExtractor={(item, index) => `${item}-${index}`}
+          />
+
           <TouchableOpacity style={styles.addGroupTaskButtonTask} onPress={addGroupTaskInput}>
             <Icon name="plus" size={20} color="#fff" />
           </TouchableOpacity>

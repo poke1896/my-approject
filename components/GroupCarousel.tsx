@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { fetchGroups, deleteGroupById  } from '../firebaseConfig';
-import { deleteDoc, doc } from 'firebase/firestore';
-import { db } from '../firebaseConfig'; 
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 const GroupCarousel = () => {

@@ -67,6 +67,36 @@ export const fetchGroups = async () => {
     throw error; // Lanza el error para que pueda ser manejado externamente
   }
 };
+
+export const fetchGroupsOther = async () => {
+  try {
+    // Construir la consulta para obtener los grupos filtrados
+    const q2 = query(collection(db, 'group'), where('otherEmails', 'array-contains', currentUserEmail));
+    
+    // Ejecutar ambas consultas y combinar los resultados
+    const [querySnapshot2] = await Promise.all([
+      getDocs(q2),
+    ]);
+    // Combinar los resultados de ambas consultas
+    const groupData2 = querySnapshot2.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+    // Unificar los resultados y eliminar duplicados
+    const groupData = [ ...groupData2];
+    const otherGroups = groupData.reduce((acc, current) => {
+      const x = acc.find(item => item.id === current.id);
+      if (!x) {
+        return acc.concat([current]);
+      } else {
+        return acc;
+      }
+    }, []);
+
+    return otherGroups; // Devuelve los datos de los grupos con sus IDs
+  } catch (error) {
+    console.error('Error al obtener datos de Firebase:', error);
+    throw error; // Lanza el error para que pueda ser manejado externamente
+  }
+};
 // Función para eliminar un grupo por su ID de documento
 export const deleteGroupById = async (groupId) => {
   try {

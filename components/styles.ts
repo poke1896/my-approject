@@ -363,7 +363,16 @@ export const styles = StyleSheet.create({
         height: 32,
         backgroundColor: '#05243E',
         borderRadius: 10,
+        color: '#FFFFFF',
         marginRight: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
+      infoTextCalendar: {
+        
+        color: '#FFFFFF',
+        marginRight: 10,
+       
       },
       accessButtonCalendar: {
         width: 80,
