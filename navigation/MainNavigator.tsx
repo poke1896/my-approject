@@ -6,7 +6,7 @@ import HomeScreen from '../components/HomeScreen';
 import TaskScreen from '../components/TaskScreen';
 import CalendarScreen from '../components/CalendarScreen';
 import SettingsScreen from '../components/SettingsScreen';
-import TaskDetailsScreen from '../components/TaskDetailsScreen'; // Importar la nueva pantalla
+import TaskDetailsScreen from '../components/TaskDetailsScreen'; 
 import Profile from '../components/Perfile';
 
 // Definir el tipo Task
@@ -19,7 +19,7 @@ interface Task {
   state: 'complete' | 'incomplete';
 }
 
-// typado rutas del stack principal
+// Typado rutas del stack principal
 export type MainStackParamList = {
   Home2: undefined;
   Tasks: undefined;
@@ -40,14 +40,12 @@ const TasksStackNavigator = () => (
   </Stack.Navigator>
 );
 
-
 const SettingsNavigator = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
     <Stack.Screen name="Settings" component={SettingsScreen} />
     <Stack.Screen name="Perfile" component={Profile} /> 
   </Stack.Navigator>
 );
-
 
 const MainNavigator = () => (
   <Tab.Navigator
@@ -56,12 +54,16 @@ const MainNavigator = () => (
         backgroundColor: '#005DA4',
         borderTopWidth: 0,
       },
+      tabBarItemStyle: {
+        marginBottom: 10, 
+        
+      },
       tabBarInactiveTintColor: 'white',
       tabBarActiveTintColor: '#00C0F3',
     }}
   >
     <Tab.Screen
-      name="Home"
+      name="Home  "
       component={HomeScreen}
       options={{
         headerShown: false,

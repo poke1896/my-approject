@@ -3,7 +3,7 @@ import { View, Image, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation, NavigationProp } from '@react-navigation/native'; 
 import { OnboardingStackParamList } from '../navigation/OnboardingNavigator';
 
-export default function WelcomeScreen() {
+export default function  WelcomeScreen() {
   const navigation = useNavigation<NavigationProp<OnboardingStackParamList>>(); 
 
   const navigateToOnboardingScreen1 = () => {

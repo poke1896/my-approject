@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
-import { fetchGroups, deleteGroupById  } from '../firebaseConfig';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, Image } from 'react-native';
+import { fetchGroups, deleteGroupById } from '../firebaseConfig';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 const GroupCarousel = () => {
@@ -16,9 +16,7 @@ const GroupCarousel = () => {
       });
   }, []);
 
-
   const handleRemoveGroup = async (groupId: string, groupName: string) => {
-    // Mostrar alerta para confirmar la eliminación
     Alert.alert(
       'Confirmar eliminación',
       `¿Estás seguro de eliminar el grupo "${groupName}"?`,
@@ -31,10 +29,7 @@ const GroupCarousel = () => {
           text: 'Aceptar',
           onPress: async () => {
             try {
-              // Llamar a la función para eliminar el grupo por su ID de documento
               await deleteGroupById(groupId);
-
-              // Actualizar el estado local eliminando el grupo
               const updatedGroups = groups.filter(group => group.id !== groupId);
               setGroups(updatedGroups);
             } catch (error) {
@@ -48,23 +43,52 @@ const GroupCarousel = () => {
     );
   };
 
+  const fetchProfileImage = async () => {
+    try {
+      const response = await fetch('https://randomuser.me/api/');
+      const data = await response.json();
+      return data.results[0].picture.thumbnail;
+    } catch (error) {
+      console.error('Error fetching profile image:', error);
+      return null;
+    }
+  };
 
   const renderOtherEmailsIcons = (otherEmails: string[]) => (
     <View style={styles.emailsContainer}>
       {otherEmails.map((email, index) => (
         <TouchableOpacity key={index} onPress={() => alert(email)}>
-          <Icon name="user-circle" size={24} color="#000000" style={styles.icon} />
+          <ProfileImage />
         </TouchableOpacity>
       ))}
     </View>
   );
+
+  const ProfileImage = () => {
+    const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null);
+
+    useEffect(() => {
+      const fetchImage = async () => {
+        const imageUrl = await fetchProfileImage();
+        setProfileImageUrl(imageUrl);
+      };
+
+      fetchImage();
+    }, []);
+
+    return profileImageUrl ? (
+      <Image source={{ uri: profileImageUrl }} style={styles.profileImage} />
+    ) : (
+      <Icon name="user-circle" size={24} color="#000000" style={styles.icon} />
+    );
+  };
 
   return (
     <ScrollView horizontal>
       <View style={styles.container}>
         {groups.map((group, index) => (
           <View key={index} style={styles.groupBox}>
-             <TouchableOpacity style={styles.closeButton} onPress={() => handleRemoveGroup(group.id, group.title)}>
+            <TouchableOpacity style={styles.closeButton} onPress={() => handleRemoveGroup(group.id, group.title)}>
               <Icon name="times" size={16} color="#FFFFFF" />
             </TouchableOpacity>
             <View>
@@ -97,10 +121,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 18,
     marginTop: 10,
-    marginHorizontal: 14 ,
+    marginHorizontal: 14,
   },
-
-  
   closeButton: {
     position: 'absolute',
     top: 5,
@@ -113,18 +135,21 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     zIndex: 1,
   },
-
   taskDate: {
-    
-    marginHorizontal: 14 ,
+    marginHorizontal: 14,
   },
-
   emailsContainer: {
     flexDirection: 'row',
     marginTop: 10,
-    marginHorizontal: 14 ,
+    marginHorizontal: 14,
   },
   icon: {
+    marginRight: 5,
+  },
+  profileImage: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
     marginRight: 5,
   },
 });
