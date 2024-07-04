@@ -60,7 +60,7 @@ const TaskModal: React.FC<TaskModalProps> = ({
             <View style={styles.modalItemTask}>
               <TouchableOpacity style={styles.modalButton2Task} onPress={showTimePicker}>
                 <Icon name="clock-o" size={20} color="#00C0F3" />
-                <Text style={styles.modalButtonTextTask}>{selectedTime || 'Hora'}</Text>
+                <Text style={styles.modalButtonTextTask}>{selectedTime || 'Hora'} </Text>
               </TouchableOpacity>
             </View>
           </View>

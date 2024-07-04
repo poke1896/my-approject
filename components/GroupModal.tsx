@@ -181,7 +181,7 @@ const GroupModal: React.FC<GroupModalProps> = ({
               </View>
             ))}
           </ScrollView>
-          {/* Componente para mostrar sugerencias */}
+       
           <FlatList
             data={emailSuggestions}
             renderItem={({ item, index }) => (

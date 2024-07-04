@@ -102,7 +102,7 @@ const TaskDetailsScreen: React.FC = () => {
       </View>
 
       <View>
-        <Text style={styles.taskDateTime}>{task.date} --- {task.time}</Text>
+        <Text style={styles.taskDateTime}>{task.date} --- {task.time} </Text>
       </View>
 
       <View style={styles.iconContainer}>

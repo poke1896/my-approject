@@ -51,7 +51,7 @@ const GroupCarousel = () => {
       const data = await response.json();
       return data.results[0].picture.thumbnail;// Devuelve la URL de la imagen
     } catch (error) {
-      console.error('Error fetching profile image:', error);
+      
       return null;
     }
   };
@@ -61,7 +61,7 @@ const GroupCarousel = () => {
     <View style={styles.emailsContainer}>
       {otherEmails.map((email, index) => (
         <TouchableOpacity key={index} onPress={() => alert(email)}>
-          <ProfileImage /> {/* Componente para mostrar la imagen de perfil */}
+          <ProfileImage /> 
         </TouchableOpacity>
       ))}
     </View>
