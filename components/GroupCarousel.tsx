@@ -4,18 +4,19 @@ import { fetchGroups, deleteGroupById } from '../firebaseConfig';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 const GroupCarousel = () => {
-  const [groups, setGroups] = useState<any[]>([]);
+  const [groups, setGroups] = useState<any[]>([]);// Estado para almacenar los grupos
 
   useEffect(() => {
     fetchGroups()
       .then((groupData) => {
-        setGroups(groupData);
+        setGroups(groupData);// Establece los datos de los grupos
       })
       .catch((error) => {
         console.error('Error al obtener datos de grupos:', error);
       });
   }, []);
 
+  // Maneja la eliminación de un grupo
   const handleRemoveGroup = async (groupId: string, groupName: string) => {
     Alert.alert(
       'Confirmar eliminación',
@@ -29,9 +30,9 @@ const GroupCarousel = () => {
           text: 'Aceptar',
           onPress: async () => {
             try {
-              await deleteGroupById(groupId);
-              const updatedGroups = groups.filter(group => group.id !== groupId);
-              setGroups(updatedGroups);
+              await deleteGroupById(groupId); // Elimina el grupo por su ID
+              const updatedGroups = groups.filter(group => group.id !== groupId);// Filtra los grupos eliminados
+              setGroups(updatedGroups);// Actualiza el estado de los grupos
             } catch (error) {
               console.error('Error al eliminar el grupo:', error);
               Alert.alert('Error', 'No se pudo eliminar el grupo.');
@@ -43,22 +44,24 @@ const GroupCarousel = () => {
     );
   };
 
+  // Obtiene la imagen de perfil
   const fetchProfileImage = async () => {
     try {
-      const response = await fetch('https://randomuser.me/api/');
+      const response = await fetch('https://randomuser.me/api/');// Llama a la API para obtener una imagen aleatoria
       const data = await response.json();
-      return data.results[0].picture.thumbnail;
+      return data.results[0].picture.thumbnail;// Devuelve la URL de la imagen
     } catch (error) {
       console.error('Error fetching profile image:', error);
       return null;
     }
   };
 
+  // Renderiza los iconos de otros correos electrónicos
   const renderOtherEmailsIcons = (otherEmails: string[]) => (
     <View style={styles.emailsContainer}>
       {otherEmails.map((email, index) => (
         <TouchableOpacity key={index} onPress={() => alert(email)}>
-          <ProfileImage />
+          <ProfileImage /> {/* Componente para mostrar la imagen de perfil */}
         </TouchableOpacity>
       ))}
     </View>
@@ -77,9 +80,9 @@ const GroupCarousel = () => {
     }, []);
 
     return profileImageUrl ? (
-      <Image source={{ uri: profileImageUrl }} style={styles.profileImage} />
+      <Image source={{ uri: profileImageUrl }} style={styles.profileImage} />// Muestra la imagen de perfil
     ) : (
-      <Icon name="user-circle" size={24} color="#000000" style={styles.icon} />
+      <Icon name="user-circle" size={24} color="#000000" style={styles.icon} />// Muestra un icono de usuario por defecto
     );
   };
 

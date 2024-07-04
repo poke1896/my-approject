@@ -72,7 +72,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
       {error ? <Text style={styles.error}>{error}</Text> : null}
 
       <TouchableOpacity style={styles.forgotPassword} onPress={navigateToForgotPasswordScreen}>
-        <Text>¿Recordar contraseña?</Text>  
+        <Text style={styles.forgotPassword}>¿Recordar contraseña? </Text>  
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.loginButton} onPress={handleSignIn}>
@@ -84,7 +84,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
       </Text>
 
       <TouchableOpacity style={styles.signUpLink} onPress={navigateToSignUpScreen}>
-        <Text>Inscribirse</Text> 
+        <Text style={styles.signUpLink} >Inscribirse </Text> 
       </TouchableOpacity>
     </LinearGradient>
   );
