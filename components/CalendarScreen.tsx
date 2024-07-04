@@ -9,7 +9,7 @@ import { useFocusEffect } from '@react-navigation/native';
 
 interface Task {
   id: string;
-  date: string; // Formato: 'YYYY-MM-DD'
+  date: string; 
   title: string;
 
 }
